@@ -1,23 +1,34 @@
 <?php
+if (isset($_POST['reset'])) {
+    
+
+        setcookie("cookie_user", '', time() - 3600, "/");
+        setcookie("cookie_color", '', time() - 3600, "/");
+        setcookie("cookie_lang", '', time() - 3600, "/");
+        setcookie("cookie_last_update_date", '', time() - 3600, "/");
 
 
-$name = $_POST['nom'] ?? $_COOKIE['cookie_user'];
-$date = $_COOKIE['cookie_last_update_date'];
-$color = $_POST['couleur'] ?? $_COOKIE['cookie_color'] ?? '#ffffff';
-$langue = $_POST['langue'] ?? $_COOKIE['cookie_lang']?? 'france';
+
+}
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
+    
     
     setcookie("cookie_user",$_POST['nom']);
     setcookie("cookie_color",$_POST['couleur']);
     setcookie("cookie_lang",$_POST['langue']);
     setcookie("cookie_last_update_date",date("Y-m-d H:i:s"));
     
-
-header('Location: index.php');
-        exit;
     
-}
+    header('Location: index.php');
+    exit;
+    
+    }
+
+$name = $_POST['nom'] ?? $_COOKIE['cookie_user'] ?? 'Guest';
+$color = $_POST['couleur'] ?? $_COOKIE['cookie_color'] ?? '#ffffff';
+$langue = $_POST['langue'] ?? $_COOKIE['cookie_lang']?? 'france';
+$date = $_COOKIE['cookie_last_update_date'] ?? null;
+
 
 if ($langue === 'france') {
     $lang = [
@@ -26,7 +37,8 @@ if ($langue === 'france') {
         'date' =>"Dernier mise a jour :" . $date,
         'color'   => "Couleur de fond",
         'langue'  => "Langue", 
-        "button"  => "Enregistrer mes choix"
+        "button"  => "Enregistrer mes choix",
+        "reset" => "Reinitialiser tout"
     ];
 } else {
     $lang = [
@@ -35,9 +47,11 @@ if ($langue === 'france') {
         'date' =>"Last update:". $date,
         'color'   => "Background Color",
         'langue'  => "Language", 
-        "button"  => "Save my options"
+        "button"  => "Save my options",
+        "reset" => "reset all"
     ];
 }
+
 
 ?>
 
@@ -82,6 +96,7 @@ if ($langue === 'france') {
                 <option value="france">Fransais</option>
             </select>
             <button type="submit"><?php echo $lang['button']; ?></button>
+            <button  type="submit" name="reset"><?php echo $lang['reset']; ?></button>
         </form>
     </div>
 </body>
