@@ -1,29 +1,29 @@
 <?php
-if (isset($_POST['reset'])) {
-    
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+if (isset($_GET['action']) && $_GET['action'] == 'reset') {
+    $path = "/";
+    setcookie("cookie_user", '', time() - 3600, $path);
+    setcookie("cookie_color", '', time() - 3600, $path);
+    setcookie("cookie_lang", '', time() - 3600, $path);
+    setcookie("cookie_last_update_date", '', time() - 3600, $path);
 
-        setcookie("cookie_user", '', time() - 3600, "/");
-        setcookie("cookie_color", '', time() - 3600, "/");
-        setcookie("cookie_lang", '', time() - 3600, "/");
-        setcookie("cookie_last_update_date", '', time() - 3600, "/");
-
-
-
-}
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    
-    
-    setcookie("cookie_user",$_POST['nom']);
-    setcookie("cookie_color",$_POST['couleur']);
-    setcookie("cookie_lang",$_POST['langue']);
-    setcookie("cookie_last_update_date",date("Y-m-d H:i:s"));
-    
-    
     header('Location: index.php');
     exit;
-    
-    }
+}
+                }
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $expiry = time() + (86400 * 30); 
+    $path = "/";
 
+    setcookie("cookie_user", $_POST['nom'], $expiry, $path);
+    setcookie("cookie_color", $_POST['couleur'], $expiry, $path);
+    setcookie("cookie_lang", $_POST['langue'], $expiry, $path);
+    setcookie("cookie_last_update_date", date("Y-m-d H:i:s"), $expiry, $path);
+
+    header('Location: index.php');
+    exit;
+}
+    
 $name = $_POST['nom'] ?? $_COOKIE['cookie_user'] ?? 'Guest';
 $color = $_POST['couleur'] ?? $_COOKIE['cookie_color'] ?? '#ffffff';
 $langue = $_POST['langue'] ?? $_COOKIE['cookie_lang']?? 'france';
@@ -96,8 +96,8 @@ if ($langue === 'france') {
                 <option value="france">Fransais</option>
             </select>
             <button type="submit"><?php echo $lang['button']; ?></button>
-            <button  type="submit" name="reset"><?php echo $lang['reset']; ?></button>
         </form>
+        <a  href="?action=reset"><?php echo $lang['reset']; ?></a>
     </div>
 </body>
 </html>
