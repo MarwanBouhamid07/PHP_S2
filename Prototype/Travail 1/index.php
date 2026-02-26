@@ -4,8 +4,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'reset') {
     $path = "/";
     setcookie("cookie_user", '', time() - 3600, $path);
     setcookie("cookie_color", '', time() - 3600, $path);
-    setcookie("cookie_lang", '', time() - 3600, $path);
-    setcookie("cookie_last_update_date", '', time() - 3600, $path);
+
 
     header('Location: index.php');
     exit;
@@ -16,42 +15,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $path = "/";
 
     setcookie("cookie_user", $_POST['nom'], $expiry, $path);
-    setcookie("cookie_color", $_POST['couleur'], $expiry, $path);
-    setcookie("cookie_lang", $_POST['langue'], $expiry, $path);
-    setcookie("cookie_last_update_date", date("Y-m-d H:i:s"), $expiry, $path);
+    setcookie("cookie_color", $_POST['color'], $expiry, $path);
+    setcookie("cookie_langue", $_POST['langue'], $expiry, $path);
+    
+
 
     header('Location: index.php');
     exit;
 }
     
 $name = $_POST['nom'] ?? $_COOKIE['cookie_user'] ?? 'Guest';
-$color = $_POST['couleur'] ?? $_COOKIE['cookie_color'] ?? '#ffffff';
-$langue = $_POST['langue'] ?? $_COOKIE['cookie_lang']?? 'france';
-$date = $_COOKIE['cookie_last_update_date'] ?? null;
+$color = $_POST['color'] ?? $_COOKIE['cookie_color'] ?? '#ffffff';
+$langue = $_POST['langue'] ?? $_COOKIE['cookie_langue'] ?? 'english';
+$lang = [];
 
-
-if ($langue === 'france') {
+if ($langue == "english") {
     $lang = [
-        'message' => "Bienvenue",
-        'name'    => "Nom",
-        'date' =>"Dernier mise a jour :" . $date,
-        'color'   => "Couleur de fond",
-        'langue'  => "Langue", 
-        "button"  => "Enregistrer mes choix",
-        "reset" => "Reinitialiser tout"
+        'title' => 'welcome',
+        'name' => 'name',
+        'color' => 'color',
+        'langue' => 'language',
+        'button' => 'submit',
     ];
-} else {
+}else{
     $lang = [
-        'message' => "Welcome",
-        'name'    => "Name",
-        'date' =>"Last update:". $date,
-        'color'   => "Background Color",
-        'langue'  => "Language", 
-        "button"  => "Save my options",
-        "reset" => "reset all"
+        'title' => 'Beinvenu',
+        'name' => 'nom',
+        'color' => 'couleur',
+        'langue' => 'langue',
+        'button' => 'envoyer',
     ];
 }
-
 
 ?>
 
@@ -63,41 +57,30 @@ if ($langue === 'france') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+  
 </head>
-<style>
-    body{
-        display: flex;
-        justify-content:center;
-        align-items:center;
-        background-color:<?php echo $color; ?>;
-    }
-    .card{
-        width: fit-content;
-        height:fit-content;
-        padding:20px;
-        background:white;
-        margin:auto;
-    }
-</style>
+
+  <style>
+        body{
+            background-color:<?php echo $color;?>;
+        }
+    </style>
 <body>
     <div class= "card">
-        <h1><?php echo $lang['message'] . " " .$name ; ?></h1>
-        <?php if(!empty($date)){
-            echo "<h2>".$lang['date']."</h2>";
-            }?>
+        <h1> <?php echo $lang['title'] ." ". $name ; ?> </h1>
         <form method = 'POST'>
-            <label for="nom"><?php echo $lang['name']; ?></label>
+            <label for="nom"><?php echo $lang['name'] ?></label>
             <input type="text" name= 'nom'>
-            <label for="couleur"><?php echo $lang['color']; ?></label>
-            <input type="color" name= 'couleur'>
-            <label for="langue"><?php echo $lang['langue']; ?></label>
-            <select name="langue" id="">
-                <option value="english">English</option>
-                <option value="france">Fransais</option>
+            <label for="couleur"><?php echo $lang['color'] ?></label>
+            <input type="color" name= 'color' value= "<?php echo $color ; ?>" >
+            <label for="langue"><?php echo $lang['langue'] ?></label>
+            <select name="langue" >
+                <option value="english" <?php  echo ($langue === "english") ? "selected" : ""  ?>>English</option>
+                <option value="france"  <?php  echo ($langue ==="france") ? "selected" : "" ?>>Fransais</option>
             </select>
-            <button type="submit"><?php echo $lang['button']; ?></button>
+            <button type="submit"><?php echo $lang['button'] ?></button>
         </form>
-        <a  href="?action=reset"><?php echo $lang['reset']; ?></a>
+        <a  href="?action=reset">reset</a>
     </div>
 </body>
 </html>
